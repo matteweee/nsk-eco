@@ -1,11 +1,12 @@
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
+import matplotlib
 import matplotlib.pyplot as plt
 
-from station_data import stations
-from schedules import time_zone_schedule, clustering_schedule
-from schemas.station import Station
+from app.station_data import stations
+from app.schedules import time_zone_schedule, clustering_schedule
+from app.schemas.station import Station
 
 
 matplotlib.use('agg')
