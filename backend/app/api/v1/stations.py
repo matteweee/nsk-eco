@@ -8,6 +8,7 @@ from datetime import datetime
 from app.station_data import stations
 from app.schedules import time_zone_schedule, clustering_schedule
 from app.schemas.station import Station
+from app.services.station_service import StationService
 
 
 matplotlib.use('agg')
@@ -17,17 +18,15 @@ router = APIRouter(
 )
 
 @router.get("")
-async def get_stations():
-    data = stations
-    return data
+async def get_stations() -> list[Station]:
+    return await StationService.find_all()
 
 @router.get("/{station_id}/")
-async def get_station(station_id: int):
-    data = stations[station_id]
-    return data
+async def get_station(station_id: int) -> Station:
+    return await StationService.find_by_id(station_id)
 
 @router.post("/{station_id}/")
-async def update_station(station_id: int, station: Station):
+async def update_station(station_id: int, station: Station) -> Station:
     stations[station_id] = station
     return station
 
