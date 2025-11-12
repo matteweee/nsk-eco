@@ -16,18 +16,24 @@
   box-shadow: 0 0 0px 5px #fff;
 }
 
-.zone-button { 
+.zone-buttons-container {
   position: absolute;
-  top: 10px;
-  left: 50px;
-  z-index: 1200;
+  top: 10px;       /* расстояние от верха */
+  left: 50px;      /* расстояние от левого края */
+  display: flex;
+  flex-direction: column; /* вертикально */
+  gap: 10px;       /* отступ между кнопками */
+  z-index: 2000;   /* чтобы были поверх карты */
+}
+
+.zone-button { 
   background-color: rgba(70, 130, 180, 0.9); /* steelblue */
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   transition: background-color 0.3s ease, transform 0.2s ease;
