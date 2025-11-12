@@ -117,13 +117,14 @@ async def get_cluster_schedule(capacity: int = 10, mode: str | None = None) -> J
             for sid in selected_ids:
                 await StationService.update_type(sid)
 
-            cluster_heads.append({
-                "cluster_id": int(cluster_id),
-                "heads": [
-                    {"id": int(selected_ids[0]), "coords": selected_heads[0].tolist()},
-                    {"id": int(selected_ids[1]), "coords": selected_heads[1].tolist()}
-                ]
-            })
+            cluster_heads_entry = {"cluster_id": int(cluster_id), "heads": []}
+            for sid, coords_pair in zip(selected_ids, selected_heads):
+                cluster_heads_entry["heads"].append({
+                    "id": int(sid),
+                    "coords": coords_pair.tolist(),
+                    "type": "battery_head" if mode == "battery_life" else "cluster_head"
+                })
+            cluster_heads.append(cluster_heads_entry)
 
     return JSONResponse(content={"polygons": polygons, "heads": cluster_heads})
 

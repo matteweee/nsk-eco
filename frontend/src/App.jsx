@@ -144,14 +144,14 @@ export default function App() {
       showClusterHeads={showClusterHeads}
       showBatteryHeads={showBatteryHeads}
      />
-      <ControlPanel
+      {/* <ControlPanel
         option={option}
         setOption={setOption}
         onGenerate={handleGeneratePlot}
 
       />
 
-      {showModal && <Modal plotUrl={plotUrl} onClose={() => setShowModal(false)} />}
+      {showModal && <Modal plotUrl={plotUrl} onClose={() => setShowModal(false)} />} */}
 
       <div className="zone-buttons-container">
           <button onClick={handleToggleZones} className={`zone-button ${showZones ? "active" : ""}`}>
