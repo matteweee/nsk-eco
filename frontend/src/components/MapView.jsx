@@ -1,5 +1,5 @@
 import React from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, Rectangle } from "react-leaflet";
 import { useStations } from "../hooks/useStations";
 import StationMarker from "./StationMarker";
 import L from "leaflet";
@@ -13,7 +13,7 @@ let DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-export default function MapView() {
+export default function MapView({ zones = [], showZones = false }) {
   const stations = useStations();
 
   return (
@@ -29,6 +29,30 @@ export default function MapView() {
       {stations.map((station) => (
         <StationMarker key={station.id} station={station} />
       ))}
+      {showZones && zones.map((zone, i) => {
+          // Разные цвета для зон (повторяются циклом)
+          const colors = ["red", "green", "blue", "orange", "purple", "teal", "brown"];
+          const color = colors[i % colors.length];
+
+          return (
+            <Rectangle
+              key={i}
+              bounds={[
+                [zone.x_min, zone.y_min],
+                [zone.x_max, zone.y_max],
+              ]}
+              pathOptions={{
+                color,
+                weight: 2,
+                fillColor: color,
+                fillOpacity: 0.25,
+              }}
+            />
+          );
+        })}
+
+
     </MapContainer>
+    
   );
 }
