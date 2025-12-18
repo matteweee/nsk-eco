@@ -1,0 +1,42 @@
+
+import asyncio
+from datetime import datetime
+
+from app.services.station_service import StationService
+from app.metrics.calculator import calculate_messages_per_second
+from app.metrics.runtime import runtime_metrics
+from app.state.runtime import runtime_state
+
+async def metrics_loop():
+    while True:
+        stations_raw = await StationService.find_all()
+
+        stations = [
+            {
+                "id": s.id,
+                "overTLV": s.overTLV
+            }
+            for s in stations_raw
+        ]
+
+        # ⚠️ режим можно хранить в конфиге / БД
+        mode = runtime_state["mode"]
+
+        # ⚠️ cluster_count НЕ считаем через KMeans
+        # берём сохранённое значение (или считаем редко)
+        cluster_count = runtime_state["cluster_count"]
+
+        mps = calculate_messages_per_second(
+            stations=stations,
+            mode=mode,
+            cluster_count=cluster_count, 
+            fake_pollutions=runtime_state["fake_pollutions"]
+        )
+
+        runtime_metrics.update({
+            "timestamp": datetime.utcnow().isoformat(),
+            "messages_per_second": mps,
+            "mode": mode
+        })
+
+        await asyncio.sleep(3)

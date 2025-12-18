@@ -4,6 +4,8 @@ import "leaflet/dist/leaflet.css";
 import MapView from "./components/MapView";
 import ControlPanel from "./components/ControlPanel";
 import Modal from "./components/Modal";
+import MetricsChartOverlay from "./components/MetricsChartOverlay";
+
 
 export default function App() {
   const [option, setOption] = useState("1");
@@ -115,6 +117,13 @@ export default function App() {
       }
   };
 
+  const handlePollutionsAdd = async () => {
+    const res = await fetch("http://127.0.0.1:8000/stations/fake_pollutions", { method: "POST" });
+  };
+  const handlePollutionsMin = async () => {
+    const res = await fetch("http://127.0.0.1:8000/stations/clear_fake_pollutions", { method: "POST" });
+  };
+
   const handleGeneratePlot = async () => {
     try {
       const response = await fetch(
@@ -137,13 +146,23 @@ export default function App() {
   };
 
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", position: "relative", width: "100%", height: "100vh" }}>
       <MapView zones={zones} showZones={showZones} clusters={clusters} showClusters={showClusters} 
       clusterHeads={clusterHeads}
       batteryHeads={batteryHeads}
       showClusterHeads={showClusterHeads}
       showBatteryHeads={showBatteryHeads}
      />
+     <MetricsChartOverlay
+      visible={
+      showZones ||
+      showClusters ||
+      showClusterHeads ||
+      showBatteryHeads
+      }
+      />
+
+
       {/* <ControlPanel
         option={option}
         setOption={setOption}
@@ -165,6 +184,13 @@ export default function App() {
           </button>
           <button onClick={handleToggleBatteryHeads} className={`zone-button ${showBatteryHeads ? "active" : ""}`}>
               {showBatteryHeads ? "Скрыть кластеры с батареями" : "Показать кластеры с батареями"}
+          </button>
+
+          <button onClick={handlePollutionsAdd} className={`zone-button`}>
+              Добавить загрязнения
+          </button>
+          <button onClick={handlePollutionsMin} className={`zone-button`}>
+              Убрать загрязнения
           </button>
       </div>
     </div>

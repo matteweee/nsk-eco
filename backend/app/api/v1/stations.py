@@ -8,12 +8,14 @@ import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 from skimage import measure
+from random import randint
 
 
 
 from app.schedules import time_zone_schedule, clustering_schedule
 from app.schemas.station import Station
 from app.services.station_service import StationService
+from app.state.runtime import runtime_state
 
 
 matplotlib.use('agg')
@@ -21,6 +23,16 @@ matplotlib.use('agg')
 router = APIRouter(
     prefix="/stations",
 )
+
+@router.post("/fake_pollutions")
+async def set_fake_pollutions():
+    runtime_state["fake_pollutions"] += randint(1, 20)
+    return JSONResponse(content={"status": "ok", "fake_pollutions": runtime_state["fake_pollutions"]})
+
+@router.post("/clear_fake_pollutions")
+async def clear_fake_pollutions():
+    runtime_state["fake_pollutions"] -= randint(1, 20)
+    return JSONResponse(content={"status": "ok", "fake_pollutions": 0})
 
 @router.post("/reset")
 async def reset_cluster_heads():
@@ -94,9 +106,10 @@ async def get_cluster_schedule(capacity: int = 10, mode: str | None = None) -> J
                 "points": polygon
             })
 
+
         if mode:
             # фильтруем только станции с type_st == 0
-            valid_mask = (kmeans.labels_ == cluster_id) & (type_sts == 0)
+            valid_mask = (kmeans.labels_ == cluster_id) & (type_sts == 1)
             cluster_points = coords[valid_mask]
             cluster_ids = station_ids[valid_mask]
 
@@ -125,6 +138,16 @@ async def get_cluster_schedule(capacity: int = 10, mode: str | None = None) -> J
                     "type": "battery_head" if mode == "battery_life" else "cluster_head"
                 })
             cluster_heads.append(cluster_heads_entry)
+
+    
+    if mode:
+        runtime_state["mode"] = "cluster_head"
+        runtime_state["cluster_count"] = len(polygons)
+    else:
+        runtime_state["mode"] = "clusters"
+        runtime_state["stations_count"] = len(stations) 
+
+    print(runtime_state)
 
     return JSONResponse(content={"polygons": polygons, "heads": cluster_heads})
 
@@ -161,6 +184,8 @@ async def get_timezone_schedule(capacity: int = 10) -> JSONResponse:
             "y_min": y_min,
             "y_max": y_max
         })
+    
+    runtime_state["stations_count"] = len(stations)
 
     return JSONResponse(content={"zones": zones})
 

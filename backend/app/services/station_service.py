@@ -33,7 +33,7 @@ class StationService(BaseService):
 
             for st in stations:
                 if st.type_st == 2:
-                    st.type_st = 0
+                    st.type_st = 1
                     session.add(st)
 
             await session.commit()
