@@ -19,11 +19,8 @@ async def metrics_loop():
             for s in stations_raw
         ]
 
-        # ⚠️ режим можно хранить в конфиге / БД
         mode = runtime_state["mode"]
 
-        # ⚠️ cluster_count НЕ считаем через KMeans
-        # берём сохранённое значение (или считаем редко)
         cluster_count = runtime_state["cluster_count"]
 
         mps = calculate_messages_per_second(

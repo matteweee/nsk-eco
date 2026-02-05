@@ -163,14 +163,7 @@ export default function App() {
       />
 
 
-      {/* <ControlPanel
-        option={option}
-        setOption={setOption}
-        onGenerate={handleGeneratePlot}
-
-      />
-
-      {showModal && <Modal plotUrl={plotUrl} onClose={() => setShowModal(false)} />} */}
+      {}
 
       <div className="zone-buttons-container">
           <button onClick={handleToggleZones} className={`zone-button ${showZones ? "active" : ""}`}>

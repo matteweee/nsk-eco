@@ -20,7 +20,6 @@ origins = [
     "http://127.0.0.1:5173",
 ]
 
-# noinspection PyTypeChecker
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
