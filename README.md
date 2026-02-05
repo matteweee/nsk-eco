@@ -39,6 +39,7 @@ uvicorn app.main:app --reload
 2. Запуск fronend
 ```bash
 cd frontend
+npm install
 npm run dev
 ```
 Доступ по ссылке localhost:5173 (стандартно)
